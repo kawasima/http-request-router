@@ -171,8 +171,7 @@ public class RouteBuilder {
 		Options[] extOptions = divideRouteOptions(segments, options);
 		Options requirements = assignRouteOptions(segments, extOptions[0]/*defaults*/ , extOptions[1]/*requirements*/);
 
-		Route route = new Route(segments, requirements, extOptions[2]/*conditions*/);
-		return route;
+		return new Route(segments, requirements, extOptions[2]/*conditions*/);
 	}
 
 	private void validateRouteConditions(Options conditions) {

@@ -22,10 +22,13 @@ public class Routes {
 	public static final List<String> HTTP_METHODS = Collections.unmodifiableList(
 			Arrays.asList(new String[]{"GET" , "HEAD", "POST", "PUT", "DELETE", "OPTIONS"}));
 
-
 	public static String generate(Options options) {
 		return getRouteSet().generate(options);
 	}
+
+    public static Options recognizePath(String path) {
+        return recognizePath(path, "GET");
+    }
 
 	public static Options recognizePath(String path, String method) {
 		return getRouteSet().recognizePath(path, method);
@@ -57,24 +60,25 @@ public class Routes {
 	}
 
     static {
-        InputStream is = Routes.class.getResourceAsStream("/http-request-router.properties");
+        InputStream is = Routes.class.getResourceAsStream("routes.properties");
         if (is == null) {
             controllerDetector = new NopControllerDetector();
         } else {
             Properties props = new Properties();
             try {
                 props.load(is);
-                String detectorClassName = props.getProperty("routes.controllerDetector");
+                String detectorClassName = props.getProperty("router.controllerDetector");
                 if (detectorClassName != null) {
                     controllerDetector = (ControllerDetector)Class.forName(detectorClassName)
                             .newInstance();
                 }
-                String finderClassName = props.getProperty("routes.currentControllerFinder");
+                String finderClassName = props.getProperty("router.currentControllerFinder");
                 if (finderClassName != null) {
                     currentControllerFinder = (CurrentControllerFinder)Class.forName(finderClassName)
                             .newInstance();
                 }
             } catch(Exception e) {
+                throw new IllegalStateException(e);
             } finally {
                 try {
                     is.close();

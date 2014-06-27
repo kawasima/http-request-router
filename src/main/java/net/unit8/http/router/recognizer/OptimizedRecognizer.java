@@ -1,7 +1,7 @@
 package net.unit8.http.router.recognizer;
 
 import net.unit8.http.router.*;
-import net.unit8.http.router.segment.RoutingException;
+import net.unit8.http.router.RoutingException;
 
 import java.util.ArrayList;
 import java.util.List;

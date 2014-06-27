@@ -2,6 +2,7 @@ package net.unit8.http.router.segment;
 
 import net.unit8.http.router.ARStringUtil;
 import net.unit8.http.router.Options;
+import net.unit8.http.router.RoutingException;
 
 import java.util.regex.Matcher;
 
@@ -12,8 +13,7 @@ public class PathSegment extends DynamicSegment {
 
 	@Override
 	public String interpolationChunk(Options hash) {
-		String value = hash.getString(getKey());
-		return value;
+		return hash.getString(getKey());
 	}
 
 	@Override

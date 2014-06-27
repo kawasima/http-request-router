@@ -3,7 +3,7 @@ package net.unit8.http.router.recognizer;
 import net.unit8.http.router.Options;
 import net.unit8.http.router.Recognizer;
 import net.unit8.http.router.Route;
-import net.unit8.http.router.segment.RoutingException;
+import net.unit8.http.router.RoutingException;
 
 import java.util.List;
 

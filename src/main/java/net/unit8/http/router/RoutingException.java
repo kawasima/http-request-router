@@ -1,4 +1,4 @@
-package net.unit8.http.router.segment;
+package net.unit8.http.router;
 
 @SuppressWarnings("serial")
 public class RoutingException extends RuntimeException {

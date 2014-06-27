@@ -1,7 +1,6 @@
 package net.unit8.http.router;
 
 import net.unit8.http.router.recognizer.OptimizedRecognizer;
-import net.unit8.http.router.segment.RoutingException;
 
 import java.io.File;
 import java.io.InputStream;
@@ -41,16 +40,14 @@ public class RouteSet {
 
 	public void loadStream(InputStream stream) {
 		clear();
-		List<Route> newRoutes = new RouteLoader(builder).load(stream);
-		routes = newRoutes;
+		routes = new RouteLoader(builder).load(stream);
 		recognizer.setRoutes(routes);
 	}
 
 	private void loadRoutes() {
 		if (!configurationFiles.isEmpty()) {
 			for (File config : configurationFiles) {
-				List<Route> newRoutes = new RouteLoader(builder).load(config);
-				routes = newRoutes;
+				routes = new RouteLoader(builder).load(config);
 			}
 		} else {
 			addRoute(":conroller/:action/:id", new Options());

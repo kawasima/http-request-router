@@ -72,15 +72,12 @@ public class Options extends HashMap<String, Object>{
 	}
 	public boolean getBoolean(String key) {
 		Object value = this.get(key);
-		if (value != null && (
-				(value instanceof Boolean && (Boolean)value) ||
-				(value instanceof Number && ((Number) value).intValue() == 1) ||
-				ARStringUtil.equals(value.toString(), "true")
-				)) {
-			return true;
-		}
-		return false;
-	}
+        return value != null && (
+                (value instanceof Boolean && (Boolean) value) ||
+                        (value instanceof Number && ((Number) value).intValue() == 1) ||
+                        ARStringUtil.equals(value.toString(), "true")
+        );
+    }
 	public Options takeoutOptions(String key) {
 		Object obj = this.remove(key);
 		if (obj instanceof Options) {

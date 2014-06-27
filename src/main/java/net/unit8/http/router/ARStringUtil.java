@@ -289,4 +289,10 @@ public class ARStringUtil {
         }
         return str.substring(0, end);
     }
+
+    public static String removeStart(String str, String started) {
+        if (isEmpty(str) || isEmpty(started))
+            return str;
+        return str.startsWith(started) ? str.substring(started.length()) : str;
+    }
 }
