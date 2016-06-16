@@ -1,7 +1,7 @@
-SAStruts Advanced Routes
+Http Request Router
 ========================
 
-SAStrutsでRuby on Railsのようなルーティングを実現するためのライブラリです。
+Ruby on Railsのようなルーティングを実現するためのライブラリです。
 
 ## ルーティングの設定
 
@@ -17,7 +17,7 @@ SAStrutsでRuby on Railsのようなルーティングを実現するための�
 		<match path="/:controller/:action/:id"/>
 	</routes>
 
-コントローラ(sastrutsでいうところのAction)は、アクションパッケージ以降の名前で書きます。サフィックスのActionは不要です。
+コントローラは、アクションパッケージ以降の名前で書きます。サフィックスのActionは不要です。
 すなわち、com.exampleがルートパッケージの場合は、admin.Userと書くとcom.example.action.admin.UserActionのアクションクラスを
 指すことになります。
 
@@ -57,7 +57,7 @@ controllerタグでコントローラごとの設定をまとめることがで�
 
 :controller と :action は特別なパラメータで、:controllerはアプリケーション内のActionクラスにマッピングされ、
 :actionはActionクラスのメソッドにマッピングされます。
-したがって、デフォルトのSAStrutsのルーティングは以下の1行で表現されます。
+したがって、「action名/メソッド名」形式のルーティングは以下の1行で表現されます。
 
 	<match path=":controller/:action" />
 
@@ -156,95 +156,9 @@ HTTPメソッドによってルーティングを分けたい場合には
 は、books/some/section/last-words-a-memoir のパスにマッチし、sectionパラメータに"some/section"が、
 titleパラメータに"last-words-a-memoir" がセットされます。
 
-## URLを作る
-
-リンクをJSPなどのViewで出力する場合、urlForのヘルパーメソッドを使って以下のように指定できます。
-
-	${ar:urlFor("admin.User#index?pageNo=2")}
-
-こう書いておくと、ルーティング設定にしたがって、
-
-	/user/list/2
-
-というURLを出力してくれます。
-
-
-## AdvancedRoutingFilter
-
-以上の設定をしたうえで、sastrutsのRoutingFilterの代わりにAdvancedRoutingFilterを使うと、上記ルーティング定義に
-したがって、リクエストをアクションメソッドに転送してくれるようになります。
-
-web.xmlにて、次のようにroutingfilterを設定されているところを、
-
-	<filter>
-		<filter-name>routingfilter</filter-name>
-		<filter-class>org.seasar.struts.filter.RoutingFilter</filter-class>
-		<init-param>
-			<param-name>jspDirectAccess</param-name>
-			<param-value>false</param-value>
-		</init-param>
-	</filter>
-
-次のようにAdvancedRoutingFilterを使うように書き換えてください。
-
-	<filter>
-		<filter-name>routingfilter</filter-name>
-		<filter-class>net.unit8.sastruts.AdvancedRoutingFilter</filter-class>
-		<init-param>
-			<param-name>jspDirectAccess</param-name>
-			<param-value>false</param-value>
-		</init-param>
-		<init-param>
-			<param-name>routes</param-name>
-			<param-value>/WEB-INF/routes.xml</param-value>
-		</init-param>
-		<init-param>
-			<param-name>checkInterval</param-name>
-			<param-value>-1</param-value>
-		</init-param>
-		<init-param>
-			<param-name>contextSensitive</param-name>
-			<param-value>false</param-value>
-		</init-param>
-	</filter>
-
-追加されているパラメータについて説明します。
-
-routes は、ルート定義ファイルのパスを設定します。webapp以下からのパスで記述してください。
-
-checkInterval は、ルート定義ファイルの更新をチェックしにいく間隔(秒数)を設定します。この間隔でチェックし更新があれば
-定義ファイルをリロードします。0を設定すると常に更新チェックするようになりますが、これは負荷が高いため本番環境では
-避けるようにしてください。このパラメータを設定しない、またはマイナスの値を設定すると更新チェック自体がおこなわれず、
-アプリケーションを再起動しない限りルート定義はリロードされません。
-
-contextSensitive は、コンテキストパスを意識したマッチング/パス生成するかどうかのフラグです。これがtrueの場合は、
-コンテキストパスより後ろのパスを使ってルートのマッチングをし、UrlRewriterを使ってパスを生成する際に自動的に
-コンテキストパスが補われるようになります。デフォルトはfalseです。
-
-### contextSensitiveについて
-
-SAStruts標準のルーティング以上のことを、このAdvanced Routesを使って実現したいということは、コンテキストパス自身も邪魔になることが多いでしょう。
-したがってcontextSensitive パラメータのデフォルトもfalse になっている訳ですが、さらに言うと大抵はApache - Tomcat の構成となっており、
-ApacheでURLをリライトした後にTomcatにリクエスト転送するので、Tomcatで受け取るURLなんて意識せず、Apacheで受けたまんまのURLでルート定義を
-書けると素敵です。
-
-しかし、Tomcat側からは転送されてきたURLしか分からないので、Apache側から当初のリクエストURLも送ってもらう必要があります。これは、mod_rewrite
-の設定で、以下のようにREQUEST_URIをリクエストヘッダに入れて、Tomcat側に転送することで実現できます。
-
-    RewriteEngine On
-    RewriteRule .* - [E=X_REQUEST_URI:%{REQUEST_URI}]
-    RequestHeader set X-Request-URI "%{X_REQUEST_URI}e"
-
-Advanced Routesでは、以下のような設定をしておくと、このヘッダからREQUEST_URIを取得するようになります。
-
-    <init-param>
-       <param-name>requestUriHeader</param-name>
-       <param-value>X-Request-URI</param-value>
-    </init-param>
-
 ## License
 
-SAStruts Advanced Routes はApache License 2.0 の元に配布されます。
+Http Request Router はApache License 2.0 の元に配布されます。
 
 * http://www.apache.org/licenses/LICENSE-2.0.txt
 
