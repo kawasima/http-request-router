@@ -4,16 +4,28 @@ import net.unit8.http.router.ARStringUtil;
 import net.unit8.http.router.Options;
 import net.unit8.http.router.RoutingException;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PathSegment extends DynamicSegment {
+	private static final Pattern ENCODED_SLASH = Pattern.compile("%2f", Pattern.CASE_INSENSITIVE);
+
 	public PathSegment(String key, Options options) {
 		super(key, options);
 	}
 
 	@Override
 	public String interpolationChunk(Options hash) {
-		return hash.getString(getKey());
+		String value = hash.getString(getKey());
+		try {
+			value = URLEncoder.encode(value, "UTF-8");
+			Matcher m = ENCODED_SLASH.matcher(value);
+			return m.replaceAll("/");
+		} catch (Exception e) {
+			return value;
+		}
 	}
 
 	@Override
@@ -42,6 +54,11 @@ public class PathSegment extends DynamicSegment {
 	@Override
 	public void matchExtraction(Options params, Matcher match, int nextCapture) {
 		String value = match.group(nextCapture);
+		try {
+			value = URLDecoder.decode(value, "UTF-8");
+		} catch (Exception ignore) {
+			// ignore
+		}
 		params.put(getKey(), value);
 	}
 }

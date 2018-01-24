@@ -2,10 +2,7 @@ package net.unit8.http.router;
 
 import net.unit8.http.router.segment.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +18,7 @@ public class RouteBuilder {
 	private Pattern nonseparatorRegexp;
 
 	public RouteBuilder() {
-		optionalSeparators = Arrays.asList(new String[]{"/"});
+		optionalSeparators = Collections.singletonList("/");
 		separatorRegexp = Pattern.compile("[" + RegexpUtil.escape(ARStringUtil.join(SEPARATORS)) + "]");
 		nonseparatorRegexp = Pattern.compile("\\A([^" + RegexpUtil.escape(ARStringUtil.join(SEPARATORS))+ "]+)");
 	}

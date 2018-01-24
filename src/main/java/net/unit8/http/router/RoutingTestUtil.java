@@ -11,7 +11,12 @@ public class RoutingTestUtil {
 
 	public static void  assertRecognizes(String optionString, String path) {
 		Options expected = UrlRewriter.parseOptionString(optionString);
-		Options actual = Routes.recognizePath(path);
+		Options actual = null;
+		try {
+			actual = Routes.recognizePath(path);
+		} catch(RoutingException e) {
+			//ignore
+		}
 		if (!expected.equals(actual)) {
 			fail(format(null, expected, actual));
 		}

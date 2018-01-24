@@ -3,6 +3,7 @@ package net.unit8.http.router.segment;
 import net.unit8.http.router.*;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -76,7 +77,7 @@ public class DynamicSegment extends Segment {
 		String value;
 		if (m != null) {
             try {
-                value = URLEncoder.encode(m, "UTF-8");
+                value = URLDecoder.decode(m, "UTF-8");
             } catch(UnsupportedEncodingException e) {
                 value = m;
             }

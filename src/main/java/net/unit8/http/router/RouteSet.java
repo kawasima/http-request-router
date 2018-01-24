@@ -50,7 +50,7 @@ public class RouteSet {
 				routes = new RouteLoader(builder).load(config);
 			}
 		} else {
-			addRoute(":conroller/:action/:id", new Options());
+			addRoute(":controller/:action/:id", new Options());
 		}
 		recognizer.setRoutes(routes);
 	}

@@ -7,6 +7,6 @@ import java.util.List;
 
 public class NopControllerDetector implements ControllerDetector{
     public List<String> detect() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 }

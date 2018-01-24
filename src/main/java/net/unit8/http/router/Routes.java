@@ -20,7 +20,7 @@ public class Routes {
     static CurrentControllerFinder currentControllerFinder;
 
 	public static final List<String> HTTP_METHODS = Collections.unmodifiableList(
-			Arrays.asList(new String[]{"GET" , "HEAD", "POST", "PUT", "DELETE", "OPTIONS"}));
+			Arrays.asList("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
 	public static String generate(Options options) {
 		return getRouteSet().generate(options);
